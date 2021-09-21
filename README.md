@@ -1,4 +1,8 @@
 # Project-Python
+
+Yeu cầu cài đặt : 
+nodejs, npm, python, flask.
+
 On terminal :
 - Run server : 
 -> source /venv/bin/activate
