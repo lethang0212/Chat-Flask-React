@@ -9,4 +9,5 @@ On terminal :
 -> python3 server.py
 - Run client :
 -> npm i
+-> npm i react-router-dom
 -> npm start
