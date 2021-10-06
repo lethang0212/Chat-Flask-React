@@ -1,13 +1,15 @@
 import axiosInstance from "./config";
 
-const URL = "http://localhost:5000";
+const URL = "http://localhost:5000/";
 
 export const getRequest = endPoint => {
   return axiosInstance.get(URL + endPoint);
 };
 
-export const postRequest = (endPoint, data) => {
-  return axiosInstance.post(URL + endPoint, data);
+export const postRequest = (users, newUser) => {
+  return axiosInstance.post(URL + users, {
+    name: newUser.name
+  });
 };
 
 export const editRequest = (endPoint, data) => {

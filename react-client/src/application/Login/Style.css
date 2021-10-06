@@ -13,7 +13,7 @@ align-content: center;
 }
 
 .card{
-height: 450px;
+height: 500px;
 margin-top: auto;
 margin-bottom: auto;
 width: 400px;
@@ -86,4 +86,12 @@ margin-left: 4px;
 #register {
     text-decoration: none;
     color: whitesmoke;
+}
+
+.w-45 {
+    width: 45% !important;
+}
+
+.mr-10 {
+    margin-left: 10%;
 }

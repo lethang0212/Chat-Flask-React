@@ -1,7 +1,7 @@
 import React from "react";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
-import LoginForm from "../components/Login/Login-Form";
-import RegisterForm from "../components/Login/Register-Form";
+import LoginForm from "../application/Login/Login-Form";
+import RegisterForm from "../application/Login/Register-Form";
 import HomePage from "../components/Page/Home-Page";
 
 export default function Routing() {

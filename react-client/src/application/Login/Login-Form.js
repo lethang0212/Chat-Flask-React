@@ -33,7 +33,7 @@ export default function LoginForm() {
                   <input
                     type="text"
                     className="form-control"
-                    placeholder="username"
+                    placeholder="User Name"
                   />
                 </div>
                 <div className="input-group form-group">
@@ -43,7 +43,7 @@ export default function LoginForm() {
                     </span>
                   </div>
                   <input
-                    type="password"
+                    type="Pass Word"
                     className="form-control"
                     placeholder="password"
                   />
