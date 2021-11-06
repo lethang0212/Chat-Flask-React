@@ -6,13 +6,13 @@
 pip install -r requirements.txt
 ```
 - nodejs, npm
-```sh
+```bash
 cd react-client
 npm i
 npm i react-router-dom
 ```
 ## Run client :
-```sh
+```bash
 npm i
 npm i react-router-dom
 npm start
