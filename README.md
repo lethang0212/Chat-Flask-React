@@ -1,13 +1,42 @@
-# Project-Python
+# Chat web application với Flask và Reactjs
 
-Yeu cầu cài đặt : 
-nodejs, npm, python, flask.
+## Requirements
+- pip packages
+```sh 
+pip install -r requirements.txt
+```
+- nodejs, npm
+```sh
+cd react-client
+npm i
+npm i react-router-dom
+```
+## Run client :
+```sh
+npm i
+npm i react-router-dom
+npm start
+```
 
-On terminal :
-- Run server : 
--> source /venv/bin/activate
--> python3 server.py
-- Run client :
--> npm i
--> npm i react-router-dom
--> npm start
+## Run server : 
+### Linux bash
+```bash
+export FLASK_APP=api
+export FLASK_ENV=development
+flask init-db # chỉ chạy lần đầu để khởi tạo database
+flask run
+```
+### CMD
+```CMD
+set FLASK_APP=api
+set FLASK_ENV=development
+flask init-db # chỉ chạy lần đầu để khởi tạo database
+flask run
+```
+### Powershell
+```powershell
+$env:FLASK_APP = "api"
+$env:FLASK_ENV = "development"
+flask init-db # chỉ chạy lần đầu để khởi tạo database
+flask run
+```
