@@ -30,7 +30,7 @@ flask run
 ```CMD
 set FLASK_APP=api
 set FLASK_ENV=development
-flask init-db # chỉ chạy lần đầu để khởi tạo database
+flask init-db @REM chỉ chạy lần đầu để khởi tạo database
 flask run
 ```
 ### Powershell
