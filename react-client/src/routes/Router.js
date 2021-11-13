@@ -9,7 +9,7 @@ export default function Routing() {
     <Router>
       <Switch>
         <Route exact strict path="/page" component={HomePage} />
-        <Route exact strict path="/" component={LoginForm} />
+        <Route exact strict path="/login" component={LoginForm} />
         <Route exact strict path="/register" component={RegisterForm} />
       </Switch>
     </Router>
