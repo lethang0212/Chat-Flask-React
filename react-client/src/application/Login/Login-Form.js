@@ -1,15 +1,40 @@
-import React from "react";
+import axios from "axios";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import "./Style.css";
 
 export default function LoginForm() {
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const handleUserNameInput = (e) => {
+    setUsername(e.target.value);
+  };
+  const handlePasswordInput = (e) => {
+    setPassword(e.target.value);
+  };
+  const handleSubmit = () => {
+    const data = {
+      username: username,
+      password: password,
+    };
+    axios
+      .post("/api/auth/login", data)
+      .then((response) => {
+        window.location.href = "/";
+        alert(response.token);
+      })
+      .catch((error) => {
+        console.log("error");
+        return Promise.reject(error);
+      });
+  };
   return (
     <>
       <div className="container">
         <div className="d-flex justify-content-center h-100">
           <div className="card mt-5">
             <div className="card-header">
-              <h3>Sign In</h3>
+              <h3>Sign up</h3>
               <div className="d-flex justify-content-end social_icon">
                 <span>
                   <i className="fab fa-facebook-square" />
@@ -34,6 +59,7 @@ export default function LoginForm() {
                     type="text"
                     className="form-control"
                     placeholder="User Name"
+                    onChange={handleUserNameInput}
                   />
                 </div>
                 <div className="input-group form-group">
@@ -43,9 +69,10 @@ export default function LoginForm() {
                     </span>
                   </div>
                   <input
-                    type="Pass Word"
+                    type="password"
                     className="form-control"
-                    placeholder="password"
+                    placeholder="Pass Word"
+                    onChange={handlePasswordInput}
                   />
                 </div>
                 <div className="row align-items-center remember">
@@ -53,8 +80,12 @@ export default function LoginForm() {
                   Remember Me
                 </div>
                 <div className="form-group">
-                  <button type="submit" className="login-btn float-right">
-                    <b>Login</b>
+                  <button
+                    type="button"
+                    className="login-btn float-right"
+                    onClick={handleSubmit}
+                  >
+                    Login
                   </button>
                 </div>
               </form>
