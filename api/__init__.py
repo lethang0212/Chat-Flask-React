@@ -31,7 +31,6 @@ def create_app(test_config=None):
     jwt = JWTManager(app)
 
     # register blueprints + routes
-
     from api.resources import db
     db.init_app(app)
 
@@ -43,8 +42,5 @@ def create_app(test_config=None):
     auth.api.add_resource(auth.usersList, '/users')
 
     app.register_blueprint(auth.bp)
-
-
-    # routes
 
     return app
