@@ -31,7 +31,6 @@ def create_app(test_config=None):
     jwt = JWTManager(app)
 
     # register blueprints + routes
-
     from api.resources import db
     db.init_app(app)
 
@@ -43,16 +42,5 @@ def create_app(test_config=None):
     auth.api.add_resource(auth.usersList, '/users')
 
     app.register_blueprint(auth.bp)
-    
-
-    from api.resources import chatting
-
-    chatting.api.add_resource(chatting.Conversation,'/newchat')
-    chatting.api.add_resource(chatting.Chat,'/chat/<cid>')
-    chatting.api.add_resource(chatting.Message,'/message')
-
-    app.register_blueprint(chatting.bp)
-    
-    # routes
 
     return app
