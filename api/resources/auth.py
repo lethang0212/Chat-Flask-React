@@ -12,14 +12,14 @@ from api.resources.db import get_db
 bp = Blueprint('auth', __name__, url_prefix='/api/auth')
 api = Api(bp)
 
-# quy: haha, thang: hehe, khang: 123
 
-parser = reqparse.RequestParser(bundle_errors=True)
-parser.add_argument('username', required=True)
-parser.add_argument('password', required=True)
 
 class register(Resource):
     def post(self):
+        parser = reqparse.RequestParser(bundle_errors=True)
+        parser.add_argument('username', required=True)
+        parser.add_argument('password', required=True)
+        parser.add_argument('display_name', required=True)
 
         db = get_db()
         args = parser.parse_args()
@@ -36,6 +36,10 @@ class register(Resource):
 
 class login(Resource):
     def post(self):
+        parser = reqparse.RequestParser(bundle_errors=True)
+        parser.add_argument('username', required=True)
+        parser.add_argument('password', required=True)
+
         db = get_db()
         args = parser.parse_args()
         user = db.execute(
@@ -48,8 +52,8 @@ class login(Resource):
             return {'msg': 'Incorrect password'}, 401
         
         expires = timedelta(days=7)
-        access_token = create_access_token(identity=user['id'], expires_delta=expires)
-        return {'token': access_token}, 200
+        access_token = create_access_token(identity=user['uid'], expires_delta=expires)
+        return {'uid': user['uid'], 'token': access_token}, 200
 
 
 
