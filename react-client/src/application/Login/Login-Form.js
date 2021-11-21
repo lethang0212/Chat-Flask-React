@@ -2,7 +2,6 @@ import axios from "axios";
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import "./Style.css";
-// this's a test
 
 export default function LoginForm() {
   const [username, setUsername] = useState("");
@@ -21,11 +20,15 @@ export default function LoginForm() {
     axios
       .post("/api/auth/login", data)
       .then((response) => {
-        window.location.href = "/";
-        alert(response.token);
+        if (response.status === 200) {
+          window.location.href = "/";
+          alert(response.status);
+        } else {
+          alert(response.status);
+        }
       })
       .catch((error) => {
-        console.log("error");
+        console.log(error.value);
         return Promise.reject(error);
       });
   };

@@ -5,25 +5,30 @@ import "./Style.css";
 export default function RegisterForm() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [fullname, setFullName] = useState("");
   const handleUserNameInput = (e) => {
     setUsername(e.target.value);
   };
   const handlePasswordInput = (e) => {
     setPassword(e.target.value);
   };
+  const handleFullNameInput = (e) => {
+    setFullName(e.target.value);
+  };
   const handleSubmit = () => {
     const data = {
       username: username,
       password: password,
+      display_name: fullname,
     };
     axios
       .post("/api/auth/register", data)
       .then((response) => {
-        window.location.href = "/";
+        window.location.href = "/login";
         console.log(response.status);
       })
       .catch((error) => {
-        console.log("error");
+        alert("Register not accessed !!!");
         return Promise.reject(error);
       });
   };
@@ -48,6 +53,19 @@ export default function RegisterForm() {
             </div>
             <div className="card-body">
               <form>
+                <div className="input-group form-group">
+                  <div className="input-group-prepend">
+                    <span className="input-group-text">
+                      <i className="fas fa-user" />
+                    </span>
+                  </div>
+                  <input
+                    type="text"
+                    className="form-control"
+                    placeholder="Full Name"
+                    onChange={handleFullNameInput}
+                  />
+                </div>
                 <div className="input-group form-group">
                   <div className="input-group-prepend">
                     <span className="input-group-text">
