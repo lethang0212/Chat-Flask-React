@@ -23,11 +23,11 @@ class register(Resource):
 
         db = get_db()
         args = parser.parse_args()
-        user = {'username': args['username'], 'password': generate_password_hash(args['password'])}
+        user = {'username': args['username'], 'password': generate_password_hash(args['password']), 'display_name': args['display_name']}
         try:
             db.execute(
-                'INSERT INTO user (username, password) VALUES (?, ?)',
-                (args['username'], generate_password_hash(args['password']))
+                'INSERT INTO user (username, password, display_name) VALUES (?, ?, ?)',
+                (args['username'], generate_password_hash(args['password']), user['display_name'])
             )
             db.commit()
         except db.IntegrityError:
