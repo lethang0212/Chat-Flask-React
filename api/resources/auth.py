@@ -45,6 +45,7 @@ class login(Resource):
         user = db.execute(
             'SELECT * FROM user WHERE username = ?', (args['username'],)
         ).fetchone()
+        display_name = user['display_name']
 
         if user is None:
             return {'msg': 'Wrong username'}, 401
@@ -53,7 +54,7 @@ class login(Resource):
         
         expires = timedelta(days=7)
         access_token = create_access_token(identity=user['uid'], expires_delta=expires)
-        return {'uid': user['uid'], 'token': access_token}, 200
+        return {'uid': user['uid'], 'display_name': display_name, 'token': access_token}, 200
 
 
 
