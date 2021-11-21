@@ -31,12 +31,12 @@ def create_app(test_config=None):
     jwt = JWTManager(app)
 
     # register blueprints + routes
-
     from api.resources import db
     db.init_app(app)
 
     # /api/auth route
     from api.resources import auth
+    from api.resources import conversation
 
     auth.api.add_resource(auth.register, '/register')
     auth.api.add_resource(auth.login, '/login')
@@ -44,7 +44,8 @@ def create_app(test_config=None):
 
     app.register_blueprint(auth.bp)
 
-
-    # routes
+    conversation.api.add_resource(conversation.conversation,'/conversation/<guid>') 
+    conversation.api.add_resource(conversation.chatList,'/list/<uid>') 
+    app.register_blueprint(conversation.bp)
 
     return app
