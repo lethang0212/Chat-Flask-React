@@ -53,7 +53,7 @@ class login(Resource):
         
         expires = timedelta(days=7)
         access_token = create_access_token(identity=user['uid'], expires_delta=expires)
-        return {'token': access_token}, 200
+        return {'uid': user['uid'], 'token': access_token}, 200
 
 
 
