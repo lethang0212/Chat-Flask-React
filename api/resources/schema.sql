@@ -23,6 +23,7 @@ CREATE TABLE message (
     time INTEGER NOT NULL,
     uid INTEGER NOT NULL,
     guid INTEGER,
+    content TEXT NOT NULL,
     FOREIGN KEY(uid) 
         REFERENCES user(uid),
     FOREIGN KEY(guid) 
