@@ -36,11 +36,16 @@ def create_app(test_config=None):
 
     # /api/auth route
     from api.resources import auth
+    from api.resources import conversation
 
     auth.api.add_resource(auth.register, '/register')
     auth.api.add_resource(auth.login, '/login')
     auth.api.add_resource(auth.usersList, '/users')
 
     app.register_blueprint(auth.bp)
+
+    conversation.api.add_resource(conversation.conversation,'/conversation/<guid>') 
+    conversation.api.add_resource(conversation.chatList,'/list/<uid>') 
+    app.register_blueprint(conversation.bp)
 
     return app
