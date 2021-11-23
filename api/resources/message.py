@@ -38,10 +38,10 @@ class Message(Resource):
         
         if args['search_key']:
             query += f"content LIKE '%{args['search_key']}%' AND "
-        if args['message_id']:
-            query += f"messid = {args['message_id']} AND "
-        if args['conversation_id']:
-            query += f"guid ={args['conversation_id']} AND "
+        if args['mid']:
+            query += f"messid = {args['mid']} AND "
+        if args['cid']:
+            query += f"guid ={args['cid']} AND "
             
         if len(args):
             query = query[0:-4]
@@ -56,16 +56,16 @@ class Message(Resource):
     def post(self):
         parser = reqparse.RequestParser(bundle_errors=True)
         parser.add_argument('content',required=True)
-        parser.add_argument('guid',required=True,type = int)
+        parser.add_argument('cid',required=True,type = int)
         args = parser.parse_args()
         
         db = get_db()
         current_time = datetime.now()
-        message = {'time' : str(current_time), 'uid' : get_jwt_identity(), 'guid' : args['guid'], 'content' : args['content']}
+        message = {'time' : str(current_time), 'uid' : get_jwt_identity(), 'guid' : args['cid'], 'content' : args['content']}
         try:
             db.execute(
                 'INSERT INTO message (time, uid, guid, content) VALUES(?,?,?,?)',
-                (str(current_time), get_jwt_identity(), args['guid'], args['content'])
+                (str(current_time), get_jwt_identity(), args['cid'], args['content'])
             )
             db.commit()
         except db.IntegrityError:
@@ -75,12 +75,12 @@ class Message(Resource):
     @jwt_required()
     def put(self):
         parser = reqparse.RequestParser(bundle_errors=True)
-        parser.add_argument('message_id',type=int,required=True)
+        parser.add_argument('mid',type=int,required=True)
         parser.add_argument('content',required=True)
         args = parser.parse_args()
                 
         db=get_db()
-        query = f"SELECT * FROM message WHERE messid = {args['message_id']}"
+        query = f"SELECT * FROM message WHERE messid = {args['mid']}"
         message = db.execute(query).fetchone()
         if not message:
             return {"msg":"Message not found..."},404
@@ -91,7 +91,7 @@ class Message(Resource):
             return {"msg":"You don't have permission to edit this message"},401
         
         db.execute(
-            f"UPDATE message SET content = '{args['content']}', time = '{str(datetime.now())}' WHERE messid = {args['message_id']}"
+            f"UPDATE message SET content = '{args['content']}', time = '{str(datetime.now())}' WHERE messid = {args['mid']}"
         )
         db.commit()
         messages = get_table_to_json(query)
