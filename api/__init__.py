@@ -44,13 +44,11 @@ def create_app(test_config=None):
     app.register_blueprint(auth.bp)
     
 
-    from api.resources import chatting
+    from api.resources import message
 
-    chatting.api.add_resource(chatting.Conversation,'/newchat')
-    chatting.api.add_resource(chatting.Chat,'/chat/<cid>')
-    chatting.api.add_resource(chatting.Message,'/message')
+    message.api.add_resource(message.Message,'/message')
 
-    app.register_blueprint(chatting.bp)
+    app.register_blueprint(message.bp)
     
     # routes
 

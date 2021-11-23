@@ -20,7 +20,7 @@ CREATE TABLE conversation (
 
 CREATE TABLE message (
     messid INTEGER PRIMARY KEY AUTOINCREMENT,
-    time INTEGER NOT NULL,
+    time TEXT NOT NULL,
     uid INTEGER NOT NULL,
     guid INTEGER,
     content TEXT NOT NULL,
