@@ -10,18 +10,23 @@ from flask_jwt_extended import get_jwt_identity, jwt_required, JWTManager
 
 from api.resources.db import get_db
 
-from random import randint
 
 bp = Blueprint('message', __name__, url_prefix='/api')
 api = Api(bp)
+
+def get_table_to_json(query):
+    db = get_db()
+    cursor = db.cursor()
+    jsonform = [dict((cursor.description[i][0], val) for i, val in enumerate(row)) for row in cursor.execute(query)]
+    return jsonform
 
 class Message(Resource):
     @jwt_required()
     def get(self):
         parse = reqparse.RequestParser()
         parse.add_argument('search_key',required=False)
-        parse.add_argument('message_id',required=False,type=int)
-        parse.add_argument('conversation_id',required=False,type=int)
+        parse.add_argument('mid',required=False,type=int,help='Message id pls')
+        parse.add_argument('cid',required=False,type=int,help="Conversation id pls")
         
         db = get_db()
         
@@ -42,10 +47,11 @@ class Message(Resource):
             query = query[0:-4]
             
         cursor = db.cursor()
-        messages = [dict((cursor.description[i][0], val) for i, val in enumerate(row)) for row in cursor.execute(query)]
+        messages = get_table_to_json(query)
         if len(messages):
             return messages,200
         return {"msg":"No message found..."},404
+    
     @jwt_required()
     def post(self):
         parser = reqparse.RequestParser(bundle_errors=True)
@@ -63,5 +69,30 @@ class Message(Resource):
             )
             db.commit()
         except db.IntegrityError:
-            return {'msg':'something happened'},409
+            return {'msg':'something happened idk check yo shit'},409
         return message,201
+    
+    @jwt_required()
+    def put(self):
+        parser = reqparse.RequestParser(bundle_errors=True)
+        parser.add_argument('message_id',type=int,required=True)
+        parser.add_argument('content',required=True)
+        args = parser.parse_args()
+                
+        db=get_db()
+        query = f"SELECT * FROM message WHERE messid = {args['message_id']}"
+        message = db.execute(query).fetchone()
+        if not message:
+            return {"msg":"Message not found..."},404
+        
+        user = get_jwt_identity()
+        
+        if user != 1 and user != message['uid']:
+            return {"msg":"You don't have permission to edit this message"},401
+        
+        db.execute(
+            f"UPDATE message SET content = '{args['content']}', time = '{str(datetime.now())}' WHERE messid = {args['message_id']}"
+        )
+        db.commit()
+        messages = get_table_to_json(query)
+        return messages,200
