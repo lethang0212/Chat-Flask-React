@@ -65,7 +65,3 @@ class usersList(Resource):
         cursor = db.cursor()
         users = [dict((cursor.description[i][0], val) for i, val in enumerate(row)) for row in cursor.execute('SELECT * FROM user')]
         return users
-
-
-
-
