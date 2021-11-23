@@ -23,11 +23,11 @@ class register(Resource):
 
         db = get_db()
         args = parser.parse_args()
-        user = {'username': args['username'], 'password': generate_password_hash(args['password'])}
+        user = {'username': args['username'], 'password': generate_password_hash(args['password']), 'display_name': args['display_name']}
         try:
             db.execute(
-                'INSERT INTO user (username, password) VALUES (?, ?)',
-                (args['username'], generate_password_hash(args['password']))
+                'INSERT INTO user (username, password, display_name) VALUES (?, ?, ?)',
+                (args['username'], generate_password_hash(args['password']), user['display_name'])
             )
             db.commit()
         except db.IntegrityError:
@@ -45,6 +45,7 @@ class login(Resource):
         user = db.execute(
             'SELECT * FROM user WHERE username = ?', (args['username'],)
         ).fetchone()
+        display_name = user['display_name']
 
         if user is None:
             return {'msg': 'Wrong username'}, 401
@@ -53,7 +54,7 @@ class login(Resource):
         
         expires = timedelta(days=7)
         access_token = create_access_token(identity=user['uid'], expires_delta=expires)
-        return {'token': access_token}, 200
+        return {'uid': user['uid'], 'display_name': display_name, 'token': access_token}, 200
 
 
 
