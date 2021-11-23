@@ -1,9 +1,14 @@
 import axios from "axios";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
+import { useHistory } from "react-router";
+import { addUser } from "../../store/action";
 import "./Style.css";
 
 export default function LoginForm() {
+  const history = useHistory();
+  const [user, setUser] = useState({});
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const handleUserNameInput = (e) => {
@@ -12,26 +17,30 @@ export default function LoginForm() {
   const handlePasswordInput = (e) => {
     setPassword(e.target.value);
   };
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     const data = {
       username: username,
       password: password,
     };
-    axios
+    await axios
       .post("/api/auth/login", data)
       .then((response) => {
-        if (response.status === 200) {
-          window.location.href = "/";
-          alert(response.status);
-        } else {
-          alert(response.status);
-        }
+        setUser(response.data);
+        history.push("/page");
       })
       .catch((error) => {
-        console.log(error.value);
+        console.log(error);
         return Promise.reject(error);
       });
   };
+  const dispatch = useDispatch();
+  useEffect(() => {
+    setUser(user);
+    if (user.uid !== undefined) {
+      dispatch(addUser(user));
+    }
+  }, [user]);
+
   return (
     <>
       <div className="container">
