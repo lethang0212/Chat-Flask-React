@@ -8,7 +8,7 @@ import {
 } from "react-router-dom";
 import LoginForm from "../application/Login/Login-Form";
 import RegisterForm from "../application/Login/Register-Form";
-import HomePage from "../components/Page/Home-Page";
+import { ChatRoom } from "../components/Messenger/ChatRoom/ChatRoom";
 
 const PrivateRoute = ({ component: Component, authed, ...rest }) => {
   return (
@@ -27,15 +27,15 @@ export default function Routing() {
   return (
     <Router>
       <Switch>
-        <PrivateRoute
-          authed={accessToken}
-          exact
-          strict
-          path="/page"
-          component={HomePage}
-        />
         <Route exact strict path="/login" component={LoginForm} />
         <Route exact strict path="/register" component={RegisterForm} />
+        <Route
+          // authed={accessToken}
+          exact
+          strict
+          path="/"
+          component={ChatRoom}
+        />
       </Switch>
     </Router>
   );
