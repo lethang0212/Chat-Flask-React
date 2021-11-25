@@ -21,7 +21,7 @@ class users(Resource):
 @jwt_manager
 def change_dpn_pass():
     db = get_db()
-    with current_app.open_resource('resource/schema.sql') as f:
+    with current_app.open_resource('resources/schema.sql') as f:
         db.executescript(f.read().decode('utf8'))
         db.execute(f"UPDATE user (display_name, password) VALUES ('admin',?)", (generate_password_hash('admin'), )
         )
