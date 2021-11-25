@@ -36,6 +36,7 @@ def create_app(test_config=None):
 
     # /api/auth route
     from api.resources import auth
+    # /api/user route
     from api.resources import user
 
     auth.api.add_resource(auth.register, '/register')
