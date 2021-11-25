@@ -36,11 +36,14 @@ def create_app(test_config=None):
 
     # /api/auth route
     from api.resources import auth
+    from api.resources import user
 
     auth.api.add_resource(auth.register, '/register')
     auth.api.add_resource(auth.login, '/login')
     auth.api.add_resource(auth.usersList, '/users')
 
-    app.register_blueprint(auth.bp)
+    from api.resources import user
+    user.api.add_resource(user.users,'/user/<uid>')
+    app.register_blueprint(user.bp)
 
     return app
