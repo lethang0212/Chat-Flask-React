@@ -57,14 +57,6 @@ class login(Resource):
 
 
 
-class usersList(Resource):
-    def get(self):
-        db = get_db()
-        # users = db.execute('SELECT * FROM user').fetchall()
-        cursor = db.cursor()
-        users = [dict((cursor.description[i][0], val) for i, val in enumerate(row)) for row in cursor.execute('SELECT * FROM user')]
-        return users
-
 
 
 

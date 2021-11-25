@@ -40,8 +40,6 @@ def create_app(test_config=None):
 
     auth.api.add_resource(auth.register, '/register')
     auth.api.add_resource(auth.login, '/login')
-    auth.api.add_resource(auth.usersList, '/users')
-    
     user.api.add_resource(user.users,'/user/<uid>')
     
     app.register_blueprint(auth.bp)
