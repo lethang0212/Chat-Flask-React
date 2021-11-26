@@ -4,6 +4,7 @@ import Avatar from "react-avatar";
 // import Collapsible from "react-collapsible";
 import styled from "styled-components";
 import { FilePlusFill } from "react-bootstrap-icons";
+import { SendMessage } from "./SendMessage";
 
 const SidebarStyled = styled.div`
   color: white;
@@ -15,30 +16,43 @@ const SidebarStyled = styled.div`
     width: 100% !important;
     overflow-y: scroll;
   }
+  .text-you {
+    margin-right: 10px;
+    background-color: blue;
+    border-radius: 10px;
+    padding: 10px 10px 10px 10px;
+    width: 30% !important;
+  }
+  .text-other {
+    margin-left: 10px;
+    background-color: gray;
+    border-radius: 10px;
+    padding: 10px 10px 10px 10px;
+    width: 30% !important;
+  }
 `;
 
 export const ChatWindow = () => {
   const data = [
-    { name: "Le Thang", message: "thang dep trai nhat qua dat" },
-    { name: "Le Thang", message: "thang dep trai nhat qua dat" },
-    { name: "Le Thang", message: "thang dep trai nhat qua dat" },
-    { name: "Le Thang", message: "thang dep trai nhat qua dat" },
-    { name: "Le Thang", message: "thang dep trai nhat qua dat" },
-    { name: "Le Thang", message: "thang dep trai nhat qua dat" },
-    { name: "Le Thang", message: "thang dep trai nhat qua dat" },
-    { name: "Le Thang", message: "thang dep trai nhat qua dat" },
-    { name: "Le Thang", message: "thang dep trai nhat qua dat" },
-    { name: "Le Thang", message: "thang dep trai nhat qua dat" },
-    { name: "Le Thang", message: "thang dep trai nhat qua dat" },
-    { name: "Le Thang", message: "thang dep trai nhat qua dat" },
-    { name: "Le Thang", message: "thang dep trai nhat qua dat" },
-    { name: "Le Thang", message: "thang dep trai nhat qua dat" },
-    { name: "Le Thang", message: "thang dep trai nhat qua dat" },
-    { name: "Le Thang", message: "thang dep trai nhat qua dat" },
-    { name: "Le Thang", message: "thang dep trai nhat qua dat" },
-    { name: "Le Thang", message: "thang dep trai nhat qua dat" },
-    { name: "Le Thang", message: "thang dep trai nhat qua dat" },
-    { name: "Le Thang", message: "thang dep trai nhat qua dat" },
+    { id: 1, name: "Le Dai Thang", message: "thang dep trai nhat qua dat" },
+    { id: 2, name: "Le Thang", message: "thang dep trai nhat qua dat" },
+    { id: 2, name: "Le Thang", message: "thang dep trai nhat qua dat" },
+    { id: 1, name: "Thang Le", message: "thang dep trai nhat qua dat" },
+    { id: 4, name: "Le Dai Thang", message: "thang dep trai nhat qua dat" },
+    { id: 1, name: "Le Thang", message: "thang dep trai nhat qua dat" },
+    { id: 1, name: "Le Thang", message: "thang dep trai nhat qua dat" },
+    { id: 1, name: "Le Thang", message: "thang dep trai nhat qua dat" },
+    { id: 5, name: "Thang Le", message: "thang dep trai nhat qua dat" },
+    { id: 7, name: "Le Thang", message: "thang dep trai nhat qua dat" },
+    { id: 1, name: "Le Thang", message: "thang dep trai nhat qua dat" },
+    { id: 5, name: "Le Thang", message: "thang dep trai nhat qua dat" },
+    { id: 9, name: "Le Thang", message: "thang dep trai nhat qua dat" },
+    { id: 1, name: "Le Thang", message: "thang dep trai nhat qua dat" },
+    { id: 1, name: "Le Thang", message: "thang dep trai nhat qua dat" },
+    { id: 1, name: "Le Thang", message: "thang dep trai nhat qua dat" },
+    { id: 2, name: "Le Thang", message: "thang dep trai nhat qua dat" },
+    { id: 4, name: "Le Thang", message: "thang dep trai nhat qua dat" },
+    { id: 5, name: "Le Thang", message: "thang dep trai nhat qua dat" },
   ];
   return (
     <>
@@ -58,16 +72,46 @@ export const ChatWindow = () => {
           <Col xs={12} className="h-75 message">
             {data.map((e) => (
               <>
-                <Col className="d-block">
-                  <Avatar name={e.name} size={32} round={true} />
-                  <span>this's a message of smilerkai</span>
-                </Col>
-                <span className="text-10">{e.name} </span>
+                {e.id === 1 ? (
+                  <>
+                    <Col className="d-block d-flex mb-2">
+                      <div>
+                        <Avatar
+                          name={e.name}
+                          size={32}
+                          round={true}
+                          className="d-block"
+                        />
+                        <span className="text-10">Other</span>
+                      </div>
+                      <span className="pr-2 text-light text-other">
+                        this's a message of smilerkai dasdasdasdasdasdas
+                      </span>
+                    </Col>
+                  </>
+                ) : (
+                  <>
+                    <Col className="d-block d-flex justify-content-end mb-2">
+                      <span className="pr-2 text-light text-you">
+                        this's a message of smilerkai dasdasdasdasdasdas
+                      </span>
+                      <div>
+                        <Avatar
+                          name="Y o u"
+                          size={32}
+                          round={true}
+                          className="d-block"
+                        />
+                        <span className="text-10 pl-2 ">You</span>
+                      </div>
+                    </Col>
+                  </>
+                )}
               </>
             ))}
           </Col>
-          <Col xs={12} className="send-message">
-            send message
+          <Col xs={12}>
+            <SendMessage />
           </Col>
         </Row>
       </SidebarStyled>

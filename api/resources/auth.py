@@ -27,7 +27,7 @@ class register(Resource):
         try:
             db.execute(
                 'INSERT INTO user (username, password, display_name) VALUES (?, ?, ?)',
-                (args['username'], generate_password_hash(args['password']), user['display_name'])
+                (args['username'], generate_password_hash(args['password']),args['display_name'])
             )
             db.commit()
         except db.IntegrityError:
