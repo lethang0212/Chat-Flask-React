@@ -34,10 +34,10 @@ class chatList(Resource):
     @jwt_required()
     def get(self,uid):
         uid1 = get_jwt_identity()
-        if uid1 != int(uid): return{"msg":"Not have access"}
+        if uid1 != int(uid): return{"msg":"Not have access"},203
         db = get_db()
         cursor = db.cursor()
-        mess = [dict((cursor.description[i][0], val) for i, val in enumerate(row)) for row in cursor.execute('SELECT conversation.* FROM message,conversation WHERE message.uid = ? and conversation.guid = message.guid',(uid))]
+        mess = [dict((cursor.description[i][0], val) for i, val in enumerate(row)) for row in cursor.execute('SELECT conversation.* FROM member_of,conversation WHERE member_of.uid = ? and conversation.guid = member_of.guid ORDER BY conversation.last_updated DESC',(uid))]
         if len(mess):
             return mess,200
         return {"msg":"No message"},404
