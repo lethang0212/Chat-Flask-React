@@ -1,5 +1,4 @@
 from datetime import datetime
-from typing_extensions import Required
 
 from flask import (
     Blueprint, flash, g, json, redirect, render_template, request, session
@@ -28,8 +27,6 @@ class Message(Resource):
         parse.add_argument('mid',required=False,type=int,help='Message id pls')
         parse.add_argument('cid',required=False,type=int,help="Conversation id pls")
         
-        db = get_db()
-        
         args = parse.parse_args()
         
         query = 'SELECT * FROM message '
@@ -46,7 +43,6 @@ class Message(Resource):
         if len(args):
             query = query[0:-4]
             
-        cursor = db.cursor()
         messages = get_table_to_json(query)
         if len(messages):
             return messages,200
@@ -88,7 +84,7 @@ class Message(Resource):
         user = get_jwt_identity()
         
         if user != 1 and user != message['uid']:
-            return {"msg":"You don't have permission to edit this message"},401
+            return {"msg":"You don't have permission to edit this message"}, 203
         
         db.execute(
             f"UPDATE message SET content = '{args['content']}', time = '{str(datetime.now())}' WHERE messid = {args['mid']}"
