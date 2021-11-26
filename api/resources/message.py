@@ -23,13 +23,24 @@ def user_in_conversation(uid,guid):
             return True
     return False
 
+def update_action(guid):
+    db = get_db()
+    last_action = get_table_to_json('SELECT MAX(last_updated) FROM conversation')
+    print(last_action)
+    if  last_action[0].get('MAX(last_updated)') == None :
+        current_action = 1
+    else :
+        current_action = last_action[0].get('MAX(last_updated)') + 1
+    db.execute(f'UPDATE conversation SET last_updated = {current_action} WHERE guid = {guid}')
+    db.commit()
+
 class Message(Resource):
     @jwt_required()
     def get(self): #Tìm kiếm tin nhắn theo nội dung,  người gửi hoặc conversation 
         parse = reqparse.RequestParser()
         parse.add_argument('search_key',required=False)
         parse.add_argument('mid',required=False,type=int,help='Message id pls')
-        parse.add_argument('cid',required=False,type=int,help="Conversation id pls")
+        parse.add_argument('guid',required=False,type=int,help="Conversation id pls")
         
         args = parse.parse_args()
         
@@ -41,8 +52,8 @@ class Message(Resource):
             query += f"content LIKE '%{args['search_key']}%' AND "
         if args['mid']:
             query += f"messid = {args['mid']} AND "
-        if args['cid']:
-            query += f"guid ={args['cid']} AND "
+        if args['guid']:
+            query += f"guid ={args['guid']} AND "
             
         if len(args):
             query = query[0:-4]
@@ -59,22 +70,27 @@ class Message(Resource):
     def post(self): #Gửi tin nhắn 
         parser = reqparse.RequestParser(bundle_errors=True)
         parser.add_argument('content',required=True)
-        parser.add_argument('cid',required=True,type = int)
+        parser.add_argument('guid',required=True,type = int)
         args = parser.parse_args()
         user_id = get_jwt_identity()
         
-        if not user_in_conversation(user_id,args['cid']):
+        room = get_table_to_json(f"SELECT * FROM conversation WHERE guid = {args['guid']}")
+        if not room :
+            return {'msg':f'Room {args["guid"]} does not exist'},404
+        
+        if not user_in_conversation(user_id,args['guid']):
             return {'msg':f"User {user_id} doesn't have access to this conversation."},401
         
         db = get_db()
         current_time = datetime.now()
-        message = {'time' : str(current_time), 'uid' : user_id , 'guid' : args['cid'], 'content' : args['content']}
+        message = {'time' : str(current_time), 'uid' : user_id , 'guid' : args['guid'], 'content' : args['content']}
         try:
             db.execute(
                 'INSERT INTO message (time, uid, guid, content) VALUES(?,?,?,?)',
-                (str(current_time), user_id , args['cid'], args['content'])
+                (str(current_time), user_id , args['guid'], args['content'])
             )
             db.commit()
+            update_action(args['guid'])
         except db.IntegrityError:
             return {'msg':'Something happened'},409
         return message,201
@@ -101,5 +117,6 @@ class Message(Resource):
             f"UPDATE message SET content = '{args['content']}', time = '{str(datetime.now())}' WHERE messid = {args['mid']}"
         )
         db.commit()
+
         messages = get_table_to_json(query)
         return messages,200

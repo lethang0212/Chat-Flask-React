@@ -36,7 +36,7 @@ def create_app(test_config=None):
 
     # /api/auth route
     from api.resources import auth
-    from api.resources import conversation
+    
 
     auth.api.add_resource(auth.register, '/register')
     auth.api.add_resource(auth.login, '/login')
@@ -52,9 +52,11 @@ def create_app(test_config=None):
     app.register_blueprint(message.bp)
     
     # routes
-
+    from api.resources import conversation
     conversation.api.add_resource(conversation.conversation,'/conversation/<guid>') 
     conversation.api.add_resource(conversation.chatList,'/list/<uid>') 
+    conversation.api.add_resource(conversation.room,'/conversation')
+    conversation.api.add_resource(conversation.join,'/join/<guid>')
     app.register_blueprint(conversation.bp)
 
     return app
