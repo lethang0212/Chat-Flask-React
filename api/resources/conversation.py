@@ -1,5 +1,4 @@
-from datetime import datetime
-from typing_extensions import Required
+from datetime import datetimefrom typing_extensions import Required
 
 from flask import (
     Blueprint, flash, g, json, redirect, render_template, request, session
