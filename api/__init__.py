@@ -2,7 +2,32 @@ import os
 
 from flask import Flask
 from flask_jwt_extended import JWTManager
+from flask_socketio import Namespace, SocketIO, emit
+from api.resources.db import get_db
 
+socketio = SocketIO()
+
+# class MyCustomNamespace(Namespace):
+#     def get(self,guid): #Nhận token của user, id của cuộc trò chuyện(guid) nếu user thuộc cuộc trò chuyện thì return
+#         db = get_db()
+#         query = f"SELECT * FROM message WHERE guid = {guid}"
+#         message = db.execute(query).fetchone()
+#         if not message:
+#             return {"msg":"Message not found..."},404
+        
+#         user = get_jwt_identity()
+        
+#         if user != 1 and user != message['uid']:
+#             return {"msg":"You don't have permission to edit this message"},401
+
+#         cursor = db.cursor()
+#         messages = [dict((cursor.description[i][0], val) for i, val in enumerate(row)) for row in cursor.execute(query)]
+#         return messages,200
+#     def on_my_event(self, data):
+        
+#         emit('my_response', data)
+
+# socketio.on_namespace(MyCustomNamespace('/test'))
 
 def create_app(test_config=None):
     """ Application factory function """
@@ -36,7 +61,7 @@ def create_app(test_config=None):
 
     # /api/auth route
     from api.resources import auth
-    from api.resources import conversation
+    
 
     auth.api.add_resource(auth.register, '/register')
     auth.api.add_resource(auth.login, '/login')
@@ -52,9 +77,13 @@ def create_app(test_config=None):
     app.register_blueprint(message.bp)
     
     # routes
-
+    from api.resources import conversation
     conversation.api.add_resource(conversation.conversation,'/conversation/<guid>') 
     conversation.api.add_resource(conversation.chatList,'/list/<uid>') 
+    conversation.api.add_resource(conversation.room,'/conversation')
+    conversation.api.add_resource(conversation.join,'/join/<guid>')
     app.register_blueprint(conversation.bp)
+
+    socketio.init_app(app)
 
     return app

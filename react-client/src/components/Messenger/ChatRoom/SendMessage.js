@@ -12,7 +12,8 @@ const Send = styled.div`
   }
 `;
 
-export const SendMessage = () => {
+export const SendMessage = (id) => {
+  const guid = id;
   return (
     <div>
       <Send>

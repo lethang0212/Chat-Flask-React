@@ -9,6 +9,7 @@ import {
 import LoginForm from "../application/Login/Login-Form";
 import RegisterForm from "../application/Login/Register-Form";
 import { ChatRoom } from "../components/Messenger/ChatRoom/ChatRoom";
+import Cookies from "js-cookie";
 
 const PrivateRoute = ({ component: Component, authed, ...rest }) => {
   return (
@@ -21,9 +22,8 @@ const PrivateRoute = ({ component: Component, authed, ...rest }) => {
 
 export default function Routing() {
   const data = useSelector((state) => state.User);
-  const accessToken = !!data.token;
-  console.log(accessToken);
-
+  Cookies.set("token", data.token);
+  const accessToken = !!Cookies.get("token");
   return (
     <Router>
       <Switch>

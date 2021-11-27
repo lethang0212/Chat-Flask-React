@@ -1,10 +1,12 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Col, Row, Button } from "react-bootstrap";
 import Avatar from "react-avatar";
 // import Collapsible from "react-collapsible";
 import styled from "styled-components";
 import { FilePlusFill } from "react-bootstrap-icons";
 import { SendMessage } from "./SendMessage";
+import { useSelector } from "react-redux";
+import { instance } from "../../../api/config";
 
 const SidebarStyled = styled.div`
   color: white;
@@ -30,9 +32,27 @@ const SidebarStyled = styled.div`
     padding: 10px 10px 10px 10px;
     width: 30% !important;
   }
+  .text-20 {
+    font-size: 20px;
+  }
 `;
 
 export const ChatWindow = () => {
+  const guid = useSelector((state) => state.User.ID.id);
+  const [id, setId] = useState();
+  useEffect(async () => {
+    setId(guid);
+    await instance
+      .post(`/api/join/${id}`)
+      .then((respone) => {
+        console.log("join", respone);
+      })
+      .catch((error) => {
+        console.log(error);
+        return Promise.reject(error);
+      });
+  }, [guid]);
+
   const data = [
     { id: 1, name: "Le Dai Thang", message: "thang dep trai nhat qua dat" },
     { id: 2, name: "Le Thang", message: "thang dep trai nhat qua dat" },
@@ -58,6 +78,9 @@ export const ChatWindow = () => {
     <>
       <SidebarStyled>
         <Row className="pt-2 h-100">
+          <Col xs={12} className="d-flex justify-content-center">
+            <b className="text-20">Room {id}</b>
+          </Col>
           <Col xs={12} className="d-flex justify-content-end">
             <Button className="bg-transparent border-0 text-primary">
               <FilePlusFill />
@@ -111,7 +134,7 @@ export const ChatWindow = () => {
             ))}
           </Col>
           <Col xs={12}>
-            <SendMessage />
+            <SendMessage guid={id} />
           </Col>
         </Row>
       </SidebarStyled>
