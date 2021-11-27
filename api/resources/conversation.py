@@ -22,12 +22,21 @@ class conversation(Resource): #Lấy tất cả các message từ 1 conversation
             return {"msg":"Message not found..."},404
         
         user = get_jwt_identity()
-        
-        if user != 1 and user != message['uid']:
+        var = db.execute("SELECT uid FROM member_of WHERE guid = ?",guid)
+        listuid = var.fetchone()
+        check = 0
+        a = []
+        while listuid is not None:
+            a.append(listuid[0])
+            if user == listuid[0]: check = 1
+            listuid = var.fetchone()
+        if check == 0:
             return {"msg":"You don't have permission to edit this message"},401
 
         cursor = db.cursor()
+        a = {'List uid in conversation':a}
         messages = [dict((cursor.description[i][0], val) for i, val in enumerate(row)) for row in cursor.execute(query)]
+        messages.append(a)
         return messages,200
 
 class chatList(Resource): # lấy tất cả các conversation của một user liệt kê theo thứ tự thời gian update gần nhất
