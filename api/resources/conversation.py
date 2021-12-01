@@ -46,7 +46,7 @@ class chatList(Resource): # lấy tất cả các conversation của một user 
 
 class room(Resource):
     @jwt_required()
-    def post(self): # 
+    def post(self): 
         db = get_db()
         last_action = get_table_to_json('SELECT MAX(last_updated) FROM conversation')
         print(last_action)
@@ -54,7 +54,15 @@ class room(Resource):
             current_action = 1
         else :
             current_action = last_action[0].get('MAX(last_updated)') + 1
-        query = f"INSERT INTO conversation (type,last_updated) VALUES('group',{current_action})"
+        parse = reqparse.RequestParser()
+        parse.add_argument('name',required = False)
+        args = parse.parse_args()
+        if args['name']:
+            name = args['name']
+        else:
+            user = get_table_to_json(f"SELECT * FROM user WHERE uid={get_jwt_identity()}")
+            name = f"{user[0].get('display_name')}'s chatroom"
+        query = f'INSERT INTO conversation (type,last_updated) VALUES("{name}",{current_action})'
         db.execute(query)
         db.commit()
         room = get_table_to_json(f"SELECT * FROM conversation WHERE last_updated = {current_action}")
