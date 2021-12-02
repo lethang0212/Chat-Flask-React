@@ -1,5 +1,5 @@
 from api import create_app, socketio
-from flask_socketio import emit, send
+from flask_socketio import emit
 
 app = create_app()
 
