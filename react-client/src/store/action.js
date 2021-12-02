@@ -4,3 +4,10 @@ export const addUser = (user) => {
     payload: user,
   };
 };
+
+export const editIdRoom = (id) => {
+  return {
+    type: "EDIT_ID_ROOM",
+    payload: id,
+  };
+};

@@ -1,8 +1,8 @@
 import os
 
-from flask import Flask
+from flask import Flask, app
 from flask_jwt_extended import JWTManager
-
+from api.resources.db import get_db
 
 def create_app(test_config=None):
     """ Application factory function """
@@ -58,9 +58,9 @@ def create_app(test_config=None):
     conversation.api.add_resource(conversation.room,'/conversation')
     conversation.api.add_resource(conversation.join,'/join/<guid>')
     app.register_blueprint(conversation.bp)
-    
+
     from api.resources import user
     user.api.add_resource(user.user,'/user')
     app.register_blueprint(user.bp)
-    
+
     return app

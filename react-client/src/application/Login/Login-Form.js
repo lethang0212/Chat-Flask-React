@@ -26,7 +26,7 @@ export default function LoginForm() {
       .post("/api/auth/login", data)
       .then((response) => {
         setUser(response.data);
-        history.push("/page");
+        history.push("/");
       })
       .catch((error) => {
         console.log(error);

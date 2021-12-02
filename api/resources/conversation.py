@@ -32,6 +32,7 @@ class conversation(Resource): #Lấy tất cả các message từ 1 conversation
         messages = [dict((cursor.description[i][0], val) for i, val in enumerate(row)) for row in cursor.execute(query)]
         return messages,200
 
+
 class chatList(Resource): # lấy tất cả các conversation của một user liệt kê theo thứ tự thời gian update gần nhất
     @jwt_required()
     def get(self,uid): #nhận token của user, id của user muốn lấy conversation để so sánh nếu đúng thì return 
