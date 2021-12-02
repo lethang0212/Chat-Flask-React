@@ -1,8 +1,11 @@
 import os
 
+from flask_socketio import SocketIO
 from flask import Flask, app
 from flask_jwt_extended import JWTManager
 from api.resources.db import get_db
+
+socketio = SocketIO(cors_allowed_origins='*')
 
 def create_app(test_config=None):
     """ Application factory function """
@@ -62,5 +65,7 @@ def create_app(test_config=None):
     from api.resources import user
     user.api.add_resource(user.user,'/user')
     app.register_blueprint(user.bp)
+
+    socketio.init_app(app)
 
     return app
