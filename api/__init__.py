@@ -54,7 +54,7 @@ def create_app(test_config=None):
 
     app.register_blueprint(message.bp)
     
-    # routes
+
     from api.resources import conversation
     conversation.api.add_resource(conversation.conversation,'/conversation/<guid>') 
     conversation.api.add_resource(conversation.chatList,'/list/<uid>') 
@@ -65,6 +65,8 @@ def create_app(test_config=None):
     from api.resources import user
     user.api.add_resource(user.user,'/user')
     app.register_blueprint(user.bp)
+
+    from api.resources import events
 
     socketio.init_app(app)
 

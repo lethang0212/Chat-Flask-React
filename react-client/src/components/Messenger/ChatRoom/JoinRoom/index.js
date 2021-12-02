@@ -1,30 +1,38 @@
 import { useEffect, useState } from "react";
 import { Button, Col } from "react-bootstrap";
-import styled from "styled-components";
+import { instance } from "../../../../api/config";
 
 export const JoinZoom = () => {
-  const Send = styled.div`
-    display: flex;
-    &&& .sendmessage {
-      height: 40px;
-      background-color: #ffff;
-      border-radius: 10px;
-      border: none;
-      padding-left: 10px;
-      margin-left: 0px;
-    }
-  `;
-
+  const [id, setId] = useState("");
+  const [room, setRoom] = useState("");
+  const handleJoinRoom = () => {
+    setRoom(id);
+  };
+  useEffect(async () => {
+    await instance
+      .post(`api/join/${room}`)
+      .then((response) => {
+        console.log("thang", response);
+      })
+      .catch((error) => {
+        console.log(error);
+        return Promise.reject(error);
+      });
+  }, [room]);
   return (
     <>
-      <Send className="d-flex mt-2" xs={12}>
+      <Col className="d-flex mt-2" xs={12}>
         <Col className="pl-0" xs={8}>
-          <input className="w-100 sendmessage" placeholder="Enter zoom id" />
+          <input
+            className="w-100 h-100 pl-2 bg-transparent text-light"
+            onChange={(e) => setId(e.target.value)}
+            placeholder="Search ID Room"
+          />
         </Col>
         <Col xs={4}>
-          <Button>Join</Button>
+          <Button onClick={handleJoinRoom}>Join</Button>
         </Col>
-      </Send>
+      </Col>
     </>
   );
 };

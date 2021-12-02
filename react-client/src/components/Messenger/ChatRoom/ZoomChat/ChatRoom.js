@@ -7,7 +7,7 @@ export const ChatRoom = () => {
   return (
     <>
       <div>
-        <Row>
+        <Row className="w-100">
           <Col xs={3}>
             <Sidebar />
           </Col>

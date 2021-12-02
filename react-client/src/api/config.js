@@ -9,6 +9,6 @@ export const instance = axios.create({
     "Access-Control-Allow-Origin": "*",
     "Access-Control-Allow-Headers": "X-Requested-With",
     Authorization: "Bearer " + token,
-    // "Content-Type": "application/json",
+    "Content-Type": "application/json",
   },
 });

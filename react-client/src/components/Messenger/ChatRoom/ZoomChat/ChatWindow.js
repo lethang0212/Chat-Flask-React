@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { Col, Row, Button } from "react-bootstrap";
 import Avatar from "react-avatar";
-// import Collapsible from "react-collapsible";
 import styled from "styled-components";
 import { FilePlusFill } from "react-bootstrap-icons";
 import { SendMessage } from "../SendMessage/SendMessage";
 import { useSelector } from "react-redux";
 import { instance } from "../../../../api/config";
+// import { Scrollbars } from "react-custom-scrollbars";
 
 const SidebarStyled = styled.div`
   color: white;
@@ -93,6 +93,7 @@ export const ChatWindow = () => {
             </div>
           </Col>
           <Col xs={12} className="h-75 message">
+            {/* <Scrollbars className="w-100"> */}
             {data.map((e) => (
               <>
                 {e.id === 1 ? (
@@ -132,6 +133,7 @@ export const ChatWindow = () => {
                 )}
               </>
             ))}
+            {/* </Scrollbars> */}
           </Col>
           <Col xs={12}>
             <SendMessage guid={id} />
