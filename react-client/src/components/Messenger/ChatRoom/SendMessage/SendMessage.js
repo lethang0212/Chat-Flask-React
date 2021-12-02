@@ -26,7 +26,7 @@ export const SendMessage = (id) => {
     socket.on("my response", (response) => {
       console.log(response);
     });
-    socket.emit("send_message_zoom", message);
+    socket.emit("my response", "hey yo wtf1");
     return () => socket.close();
   }, [click]);
   return (
