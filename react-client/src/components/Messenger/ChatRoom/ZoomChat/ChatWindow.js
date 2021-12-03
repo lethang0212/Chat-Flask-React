@@ -5,8 +5,10 @@ import styled from "styled-components";
 import { FilePlusFill } from "react-bootstrap-icons";
 import { SendMessage } from "../SendMessage/SendMessage";
 import { useSelector } from "react-redux";
-import { instance } from "../../../../api/config";
-// import { Scrollbars } from "react-custom-scrollbars";
+import Cookies from "js-cookie";
+import axios from "axios";
+import { MesZoom } from "./MessageZoom";
+import { io } from "socket.io-client";
 
 const SidebarStyled = styled.div`
   color: white;
@@ -35,51 +37,69 @@ const SidebarStyled = styled.div`
   .text-20 {
     font-size: 20px;
   }
+  .sendmessage {
+  }
 `;
 
 export const ChatWindow = () => {
   const guid = useSelector((state) => state.User.ID.id);
-  const [id, setId] = useState();
-  useEffect(async () => {
-    setId(guid);
+  const token = Cookies.get("token");
+  const [input, setInput] = useState("");
+  const [data, setData] = useState();
+  const user = useSelector((state) => state.User);
+  const uid = user.uid;
+  const time = Date.now();
+  const instance = axios.create({
+    timeout: 1000,
+    headers: {
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Headers": "X-Requested-With",
+      Authorization: "Bearer " + token,
+      "Content-Type": "application/json",
+    },
+  });
+  const socket = io("http://127.0.0.1:5000");
+  useEffect(() => {
+    socket.on("client_listening", (mes) => {
+      console.log("thangdz", mes);
+      setData(mes);
+    });
+  });
+  const handleMessageInput = (e) => {
+    setInput(e.target.value);
+  };
+
+  const handlePostMessage = async () => {
+    const data = {
+      message: input,
+      guid,
+    };
     await instance
-      .post(`/api/join/${id}`)
-      .then((respone) => {
-        console.log("join", respone);
+      .post(`api/message`, data)
+      .then((res) => {
+        console.log("luu mes thanh cong");
       })
-      .catch((error) => {
+      .then((error) => {
         console.log(error);
         return Promise.reject(error);
       });
-  }, [guid]);
+  };
 
-  const data = [
-    { id: 1, name: "Le Dai Thang", message: "thang dep trai nhat qua dat" },
-    { id: 2, name: "Le Thang", message: "thang dep trai nhat qua dat" },
-    { id: 2, name: "Le Thang", message: "thang dep trai nhat qua dat" },
-    { id: 1, name: "Thang Le", message: "thang dep trai nhat qua dat" },
-    { id: 4, name: "Le Dai Thang", message: "thang dep trai nhat qua dat" },
-    { id: 1, name: "Le Thang", message: "thang dep trai nhat qua dat" },
-    { id: 1, name: "Le Thang", message: "thang dep trai nhat qua dat" },
-    { id: 1, name: "Le Thang", message: "thang dep trai nhat qua dat" },
-    { id: 5, name: "Thang Le", message: "thang dep trai nhat qua dat" },
-    { id: 7, name: "Le Thang", message: "thang dep trai nhat qua dat" },
-    { id: 1, name: "Le Thang", message: "thang dep trai nhat qua dat" },
-    { id: 5, name: "Le Thang", message: "thang dep trai nhat qua dat" },
-    { id: 9, name: "Le Thang", message: "thang dep trai nhat qua dat" },
-    { id: 1, name: "Le Thang", message: "thang dep trai nhat qua dat" },
-    { id: 1, name: "Le Thang", message: "thang dep trai nhat qua dat" },
-    { id: 1, name: "Le Thang", message: "thang dep trai nhat qua dat" },
-    { id: 2, name: "Le Thang", message: "thang dep trai nhat qua dat" },
-    { id: 4, name: "Le Thang", message: "thang dep trai nhat qua dat" },
-    { id: 5, name: "Le Thang", message: "thang dep trai nhat qua dat" },
-  ];
+  const handleSendMessage = async () => {
+    socket.emit("server_listening", {
+      message: input,
+      guid: guid,
+      uid: uid,
+      time: time,
+    });
+    return () => socket.close();
+  };
   return (
     <>
       <SidebarStyled>
         <Row className="pt-2 h-100">
           <Col xs={12} className="d-flex justify-content-center">
-            <b className="text-20">Room {id}</b>
+            <b className="text-20">Room {guid}</b>
           </Col>
           <Col xs={12} className="d-flex justify-content-end">
             <Button className="bg-transparent border-0 text-primary">
@@ -93,15 +113,14 @@ export const ChatWindow = () => {
             </div>
           </Col>
           <Col xs={12} className="h-75 message">
-            {/* <Scrollbars className="w-100"> */}
-            {data.map((e) => (
+            {/* {messageChat.map((e) => (
               <>
-                {e.id === 1 ? (
+                {e.uid !== uid ? (
                   <>
                     <Col className="d-block d-flex mb-2">
                       <div>
                         <Avatar
-                          name={e.name}
+                          name="O t h e r"
                           size={32}
                           round={true}
                           className="d-block"
@@ -109,7 +128,7 @@ export const ChatWindow = () => {
                         <span className="text-10">Other</span>
                       </div>
                       <span className="pr-2 text-light text-other">
-                        this's a message of smilerkai dasdasdasdasdasdas
+                        {e.message}
                       </span>
                     </Col>
                   </>
@@ -117,7 +136,7 @@ export const ChatWindow = () => {
                   <>
                     <Col className="d-block d-flex justify-content-end mb-2">
                       <span className="pr-2 text-light text-you">
-                        this's a message of smilerkai dasdasdasdasdasdas
+                        {e.message}
                       </span>
                       <div>
                         <Avatar
@@ -132,11 +151,28 @@ export const ChatWindow = () => {
                   </>
                 )}
               </>
-            ))}
-            {/* </Scrollbars> */}
+            ))} */}
+            <MesZoom guid={guid} data={data} uid={uid} />
           </Col>
-          <Col xs={12}>
-            <SendMessage guid={id} />
+          <Col xs={12} className="d-flex">
+            <Col xs={10}>
+              <input
+                onChange={handleMessageInput}
+                className="w-100 h-100 mb-2 pl-2 bg-transparent text-light rounded"
+                placeholder="Send message"
+              />
+            </Col>
+            <Col xs={2}>
+              <Button
+                onClick={() => {
+                  handleSendMessage();
+                  handlePostMessage();
+                }}
+                className="bg-transparent "
+              >
+                Send
+              </Button>
+            </Col>
           </Col>
         </Row>
       </SidebarStyled>

@@ -1,14 +1,7 @@
 import axios from "axios";
 import Cookies from "js-cookie";
+import { io } from "socket.io-client";
 
 const token = Cookies.get("token");
 
-export const instance = axios.create({
-  timeout: 1000,
-  headers: {
-    "Access-Control-Allow-Origin": "*",
-    "Access-Control-Allow-Headers": "X-Requested-With",
-    Authorization: "Bearer " + token,
-    "Content-Type": "application/json",
-  },
-});
+export const socket = io("http://127.0.0.1:5000");

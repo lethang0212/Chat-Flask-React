@@ -25,8 +25,8 @@ class conversation(Resource): #Lấy tất cả các message từ 1 conversation
         
         user = get_jwt_identity()
         
-        if user != 1 and user != message['uid']:
-            return {"msg":"You don't have permission to edit this message"},401
+        # if user != message['uid']:    
+        #     return {"msg":"You don't have permission to edit this message"},401
 
         cursor = db.cursor()
         messages = [dict((cursor.description[i][0], val) for i, val in enumerate(row)) for row in cursor.execute(query)]

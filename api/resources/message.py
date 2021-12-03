@@ -11,7 +11,7 @@ bp = Blueprint('message', __name__, url_prefix='/api')
 api = Api(bp)
 
 def get_table_to_json(query):
-    db = get_db()
+    db = get_db()   
     cursor = db.cursor()
     jsonform = [dict((cursor.description[i][0], val) for i, val in enumerate(row)) for row in cursor.execute(query)]
     return jsonform
@@ -49,7 +49,7 @@ class Message(Resource):
             query += 'WHERE '
         
         if args['search_key']:
-            query += f"content LIKE '%{args['search_key']}%' AND "
+            query += f"message LIKE '%{args['search_key']}%' AND "
         if args['mid']:
             query += f"messid = {args['mid']} AND "
         if args['guid']:
@@ -69,7 +69,7 @@ class Message(Resource):
     @jwt_required()
     def post(self): #Gửi tin nhắn 
         parser = reqparse.RequestParser(bundle_errors=True)
-        parser.add_argument('content',required=True)
+        parser.add_argument('message',required=True)
         parser.add_argument('guid',required=True,type = int)
         args = parser.parse_args()
         user_id = get_jwt_identity()
@@ -83,11 +83,12 @@ class Message(Resource):
         
         db = get_db()
         current_time = datetime.now()
-        message = {'time' : str(current_time), 'uid' : user_id , 'guid' : args['guid'], 'content' : args['content']}
+        # message = {'time' : str(current_time), 'uid' : user_id , 'guid' : args['guid'], 'message' : args['message']}
+        message = {'message' : args['message'], 'guid': args['guid'], 'uid': user_id, 'time': str(current_time)}
         try:
             db.execute(
-                'INSERT INTO message (time, uid, guid, content) VALUES(?,?,?,?)',
-                (str(current_time), user_id , args['guid'], args['content'])
+                'INSERT INTO message (message, guid, uid, time) VALUES(?,?,?,?)',
+                (args['message'], args['guid'], user_id, str(current_time))
             )
             db.commit()
             update_action(args['guid'])

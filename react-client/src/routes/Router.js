@@ -29,8 +29,8 @@ export default function Routing() {
       <Switch>
         <Route exact strict path="/login" component={LoginForm} />
         <Route exact strict path="/register" component={RegisterForm} />
-        <Route
-          // authed={accessToken}
+        <PrivateRoute
+          authed={accessToken}
           exact
           strict
           path="/"

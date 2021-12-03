@@ -8,6 +8,11 @@ const USER = {
     id: 0,
   },
 };
+
+const MESS = {
+  mes: [],
+};
+
 function User(state = USER, action) {
   switch (action.type) {
     case "ADD_USER":
@@ -28,16 +33,17 @@ function User(state = USER, action) {
   }
 }
 
-// function Id(state = ID, action) {
-//   switch (action.type) {
-//     case "EDIT_ID_ROOM":
-//       state.id = action.payload;
-//       return { ...state };
-//     default:
-//       return state;
-//   }
-// }
+function Mes(state = MESS, action) {
+  switch (action.type) {
+    case "ADD_MESSAGE":
+      const mesHis = action.payload;
+      return { ...state, mes: mesHis };
+    default:
+      return state;
+  }
+}
 
 export const reducer = combineReducers({
   User,
+  Mes,
 });

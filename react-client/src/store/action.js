@@ -11,3 +11,10 @@ export const editIdRoom = (id) => {
     payload: id,
   };
 };
+
+export const addMessage = (mes) => {
+  return {
+    type: "ADD_MESSAGE",
+    payload: mes,
+  };
+};

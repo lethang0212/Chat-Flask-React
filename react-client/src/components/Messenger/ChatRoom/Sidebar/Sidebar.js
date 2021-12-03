@@ -5,11 +5,12 @@ import styled from "styled-components";
 import Collapsible from "react-collapsible";
 import { FilePlusFill } from "react-bootstrap-icons";
 import { useDispatch, useSelector } from "react-redux";
-import { instance } from "../../../../api/config";
 import { useHistory } from "react-router";
 import Cookies from "js-cookie";
-import { editIdRoom } from "../../../../store/action";
+import { addMessage, editIdRoom } from "../../../../store/action";
 import { JoinZoom } from "../JoinRoom";
+import { io } from "socket.io-client";
+import axios from "axios";
 
 const SidebarStyled = styled.div`
   background: #04040459;
@@ -21,6 +22,7 @@ export const Sidebar = () => {
   const [collaps, setCollaps] = useState(false);
   const [status, setStatus] = useState(false);
   const [room, setRoom] = useState([]);
+  const [mes, setMesHis] = useState([]);
   const data = useSelector((state) => state.User);
   const name = data.display_name;
   const id = data.uid.toString();
@@ -28,6 +30,30 @@ export const Sidebar = () => {
   const dispatch = useDispatch();
   const handleIdRoom = (e) => {
     dispatch(editIdRoom(e));
+    dispatch(addMessage(mes));
+  };
+
+  const token = Cookies.get("token");
+  const instance = axios.create({
+    timeout: 1000,
+    headers: {
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Headers": "X-Requested-With",
+      Authorization: "Bearer " + token,
+      "Content-Type": "application/json",
+    },
+  });
+  const handleMesHistory = async (e) => {
+    instance
+      .get(`/api/conversation/${e}`)
+      .then((response) => {
+        // console.log("res", response.data);
+        setMesHis(response.data);
+      })
+      .catch((error) => {
+        console.log(error);
+        return Promise.reject(error);
+      });
   };
   const handleCreateRoom = async () => {
     await instance
@@ -40,11 +66,18 @@ export const Sidebar = () => {
         return Promise.reject(error);
       });
   };
+  const handleEmitListRoom = () => {
+    const socket = io("http://localhost:5000");
+    socket.on("logged_in", (response) => {
+      console.log("log_in", response);
+    });
+    socket.emit("logged_in", room);
+    return () => socket.close();
+  };
   useEffect(async () => {
     await instance
       .get(`/api/list/${id}`)
       .then((response) => {
-        console.log("get", response);
         setRoom(response.data);
       })
       .catch((error) => {
@@ -71,11 +104,19 @@ export const Sidebar = () => {
           </Col>
           <JoinZoom />
           <Col xs={12} className="pt-4">
-            <Button onClick={() => setCollaps(!collaps)}>List room</Button>
+            <Button
+              onClick={() => {
+                setCollaps(!collaps);
+                handleEmitListRoom();
+              }}
+            >
+              List room
+            </Button>
             <Collapsible open={collaps} className="text-primary">
               {room.map((e) => (
                 <Button
                   onClick={() => {
+                    handleMesHistory(e.guid);
                     handleIdRoom(e.guid);
                   }}
                   className="bg-transparent d-block border-0 fs-12"
